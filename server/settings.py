@@ -53,6 +53,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "server.urls"
+LOGOUT_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = '/'
 
 TEMPLATES = [
     {

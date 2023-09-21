@@ -9,6 +9,7 @@
     <h2>Регистрация</h2>
     <form method="post">
         {% csrf_token %}
+        {% if not user.is_authenticated %}
         <label for="first name">Имя:</label>
         <input type="text" id="first name" name="first name" required><br><br>
         <label for="last name">Фамилия:</label>
@@ -22,5 +23,9 @@
         <button type="submit">Зарегистрироваться</button>
     </form>
     <p>Уже есть аккаунт? <a href="{% url 'login' %}">Войдите</a></p>
+    {% else %}
+    <p>Вы уже вошли в систему</p>
+    <p><a href="{% url 'home' %}">На главную страницу</a></p>
+    {% endif %}
 </body>
 </html>

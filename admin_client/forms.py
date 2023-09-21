@@ -1,5 +1,5 @@
 from django import forms
-
+from django.contrib.auth.forms import AuthenticationForm
 from .models import CustomUser
 
 
@@ -27,8 +27,18 @@ class RegistrationForm(forms.ModelForm):
         return user
 
 
-class LoginForm(forms.ModelForm):
-    """Login form"""
+class LoginForm(forms.Form):
+    email = forms.EmailField(
+        required=True,
+        label="Email",
+        widget=forms.EmailInput,
+    )
+    password = forms.CharField(
+        label="Password",
+        strip=False,
+        widget=forms.PasswordInput,
+    )
+
     class Meta:
         model = CustomUser
-        fields = ["email", "password"]
+        fields = ["email"]

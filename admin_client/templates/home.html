@@ -7,5 +7,13 @@
 </head>
 <body>
     <h2>Главная страница</h2>
+    {% if user.is_authenticated %}
+        <p>Вы вошли как {{ user.first_name }}</p>
+        <p><a href="{% url 'logout' %}">Выйти</a></p>
+    {% else %}
+        <p>Вы не вошли</p>
+        <p>Уже есть аккаунт? <a href="{% url 'login' %}">Войдите</a></p>
+        <p>Еще нет аккаунта? <a href="{% url 'registration' %}">Зарегистрируйтесь</a></p>
+    {% endif %}
 </body>
 </html>
