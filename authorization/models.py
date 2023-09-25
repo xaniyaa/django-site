@@ -1,4 +1,9 @@
+from django.db import models
+from django.contrib.auth.models import AbstractBaseUser
+from django.db import models
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.base_user import BaseUserManager
+from django.conf import settings
 
 
 class UserManager(BaseUserManager):
@@ -28,3 +33,18 @@ class UserManager(BaseUserManager):
             raise ValueError('Администратор должен иметь is_superuser=True.')
 
         return self._create_user(email, password, **extra_fields)
+
+
+class CustomUser(AbstractBaseUser):
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    email = models.EmailField(_("Email Address"), max_length=255, unique=True)
+
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False)
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []
+
+    objects = UserManager()
+

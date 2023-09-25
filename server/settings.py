@@ -11,10 +11,45 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
 from pathlib import Path
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+# enviroment variables
+e = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = e('DEBUG', default=True)
+
+OPEN_AI_KEY = e("OPENAI_API_KEY")
+
+APP_DOMAIN = e("APP_DOMAIN", default="http://localhost:8000")
+
+FILE_UPLOAD_STORAGE = e("FILE_UPLOAD_STORAGE", default="local")  # local | s3
+
+if FILE_UPLOAD_STORAGE == "local":
+    MEDIA_ROOT_NAME = "media"
+    MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_ROOT_NAME)
+    MEDIA_URL = f"/{MEDIA_ROOT_NAME}/"
+
+if FILE_UPLOAD_STORAGE == "s3":
+    # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+    MINIO_S3_ENDPOINT = e("MINIO_S3_ENDPOINT")
+    MINIO_S3_ACCESS_KEY_ID = e("MINIO_S3_ACCESS_KEY_ID")
+    MINIO_S3_SECRET_ACCESS_KEY = e("MINIO_S3_SECRET_ACCESS_KEY")
+    MINIO_STORAGE_BUCKET_NAME = e("MINIO_STORAGE_BUCKET_NAME")
+    MINIO_S3_REGION_NAME = e("MINIO_S3_REGION_NAME")
+    MINIO_S3_SIGNATURE_VERSION = e("MINIO_S3_SIGNATURE_VERSION", default="s3v4")
+
+    # https://docs.aws.amazon.com/AmazonS3/latest/userguide/acl-overview.html#canned-acl
+    MINIO_DEFAULT_ACL = e("MINIO_DEFAULT_ACL", default="private")
+
+    MINIO_PRESIGNED_EXPIRY = e.int("MINIO_PRESIGNED_EXPIRY", default=10)  # seconds
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -22,11 +57,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-am_1#=!f20$f!%zn@*%v+$ob0f_nluz_71#@f_=r7d97fizs*t"
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -37,10 +68,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "admin_client",
+    'rest_framework',
+    "authorization",
+    "api",
+    "files",
 ]
 
-AUTH_USER_MODEL = "admin_client.CustomUser"
+AUTH_USER_MODEL = "authorization.CustomUser"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

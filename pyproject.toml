@@ -8,6 +8,12 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 Django = "^4.2.5"
+django-environ = "^0.11.2"
+djangorestframework = "^3.14.0"
+markdown = "^3.4.4"
+django-filter = "^23.3"
+boto3 = "^1.28.53"
+minio = "^7.1.17"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.12.0"

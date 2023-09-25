@@ -1,10 +1,8 @@
-from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import redirect, render
-from .models import CustomUser
-from .forms import LoginForm, RegistrationForm
+from django.shortcuts import render, redirect
+from .forms import RegistrationForm, LoginForm
+from django.contrib.auth import authenticate, login
 
 
-# Create your views here.
 def register_view(request):
     user = request.user
     if request.method == "POST":
@@ -27,7 +25,6 @@ def login_view(request):
         if form.is_valid():
             email = form.cleaned_data.get("email")
             password = form.cleaned_data.get("password")
-            print(f"{email} {password}")
             user = authenticate(request, username=email, password=password)
             login(request, user)
             return redirect("home")
@@ -40,5 +37,3 @@ def login_view(request):
 def home_view(request):
     user = request.user
     return render(request, 'home.html', {"user": user})
-
-
